@@ -66,10 +66,15 @@ func main() {
 
 	if err = (&controllers.CronJobReconciler{
 		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("CronJob"),
+		Log:    ctrl.Log.WithName("controllers").WithName("Captain"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "CronJob")
+		setupLog.Error(err, "unable to create controller", "controller", "Captain")
+		os.Exit(1)
+	}
+
+	if err = (&batchv1.CronJob{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "CronJob")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder
